@@ -19,6 +19,10 @@ function gX(id)
   return (id % 16)
 end
 
+-- screen coords
+function gIDfromCoords(x,y)
+  return gID(math.floor(x/50),math.floor(y/50))
+end
 
 function construct()
  
@@ -107,6 +111,12 @@ function love.mousereleased( x, y, button )
  
 --  id = os.time()  -- oh dear TODO... its in sec.
     --  id = love.math.random( 0, 1000 ) * id--  this is so good
+    print(x .. ":" .. y)
+    if tiles[gIDfromCoords(x,y)] == 1 then
+      tiles[gIDfromCoords(x,y)] = 0
+    else
+      tiles[gIDfromCoords(x,y)] = 1
+    end
 
 end
 
@@ -117,14 +127,14 @@ function love.draw()
 
   for i = 0, (gID(15,12)) do
     if (tiles[i] == 0) then
-      love.graphics.setColor(0,50,0)
+      love.graphics.setColor(255,0,0)
     end
     if(tiles[i] == 1) then
       love.graphics.setColor(0,0,255)
     end
     y = gY(i)
     x = gX(i)
-    print(i .. "," .. x .. ":" .. y)
+    --print(i .. "," .. x .. ":" .. y)
     love.graphics.polygon("fill", x*50,y*50, x*50, y*50+50, x*50+50,y*50+50, x*50+50, y*50)
   end
 
