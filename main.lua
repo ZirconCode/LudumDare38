@@ -4,6 +4,22 @@ lume = require "lume"
 serialize = require 'ser'
 
 
+-- 800*600~w*h
+-- tiles = 50*50
+-- 0x0 to 15x12
+function gID(x,y)
+  return (x+(y*16))
+end
+
+function gY(id)
+  return math.floor(id / 16)
+end
+
+function gX(id)
+  return (id % 16)
+end
+
+
 function construct()
  
 end
@@ -37,7 +53,22 @@ function love.load()
 
   blah = 0
 
-  objects = {} 
+  objects = {}
+
+  tiles = {}
+  
+  for i = 0, (gID(15,12)) do
+    tiles[i] = 0
+  end
+  tiles[5] = 1
+  tiles[15] = 1
+  tiles[0] = 1
+  tiles[30] = 1
+  tiles[16*12-1] = 1
+
+  --tiles[key] = 'test'
+  --print(tiles[{2,1}])
+  --print(tiles[key])
   -- voice1:play()
 
   --construct()
@@ -81,23 +112,25 @@ end
 
 function love.draw()
 
-  love.graphics.setColor(0, 250, 0)
-  love.graphics.polygon('fill', 100, 100, 200, 100, 150, 200)
-
   -- CAMERA?
  -- love.graphics.translate( 0, cameraY ) -- TODO
 
-  --love.graphics.setColor(72, 160, 14) -- set the drawing color to green for the ground
- -- love.graphics.polygon("fill", objects.ground.body:getWorldPoints(objects.ground.shape:getPoints())) -- draw a "filled in" polygon using the ground's coordinates
-
-  --love.graphics.draw(picSmiley, objects.ball.body:getX(), objects.ball.body:getY())
-
-  for key,value in pairs(objects) do 
-     print(key)
-     print(value)
-     love.graphics.setColor(0, 0, 250)
-     love.graphics.polygon('fill', 100, 100, 200, 100, 150, 200)
+  for i = 0, (gID(15,12)) do
+    if (tiles[i] == 0) then
+      love.graphics.setColor(0,50,0)
+    end
+    if(tiles[i] == 1) then
+      love.graphics.setColor(0,0,255)
+    end
+    y = gY(i)
+    x = gX(i)
+    print(i .. "," .. x .. ":" .. y)
+    love.graphics.polygon("fill", x*50,y*50, x*50, y*50+50, x*50+50,y*50+50, x*50+50, y*50)
   end
+
+  love.graphics.setColor(0, 250, 0)
+  love.graphics.polygon('fill', 100, 100, 200, 100, 150, 200)
+
 
 end
 
