@@ -35,13 +35,15 @@ function love.load()
   --picVictory = love.graphics.newImage("victory.png")
   rotation = 0
 
+  blah = 0
+
   objects = {} 
   -- voice1:play()
 
   --construct()
 
   --initial graphics setup
-  love.graphics.setBackgroundColor(20, 5, 0) --set the background color to a nice blue
+  love.graphics.setBackgroundColor(255, 5, 0) --set the background color to a nice blue
   love.window.setMode(800, 600) --set the window dimensions to 650 by 650
 end
 
@@ -79,6 +81,9 @@ end
 
 function love.draw()
 
+  love.graphics.setColor(0, 250, 0)
+  love.graphics.polygon('fill', 100, 100, 200, 100, 150, 200)
+
   -- CAMERA?
  -- love.graphics.translate( 0, cameraY ) -- TODO
 
@@ -87,10 +92,11 @@ function love.draw()
 
   --love.graphics.draw(picSmiley, objects.ball.body:getX(), objects.ball.body:getY())
 
-  --love.graphics.draw(picSmiley, objects.ball.body:getX(), objects.ball.body:getY(), math.rad(rotation), 1, 1, 40 / 2, 22 / 2)
- 
   for key,value in pairs(objects) do 
-    --print(key,value)
+     print(key)
+     print(value)
+     love.graphics.setColor(0, 0, 250)
+     love.graphics.polygon('fill', 100, 100, 200, 100, 150, 200)
   end
 
 end
