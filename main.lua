@@ -42,6 +42,8 @@ function resetCombat(ballXVel)
   resetTimer = 3
   outTime = 0
 
+  psystem:reset()
+
 end
 
 
@@ -74,6 +76,8 @@ function love.load()
 
   asg1 = love.graphics.newImage("Asgard1.jpg")
   asg0 = love.graphics.newImage("title.jpg")
+
+  pImg = love.graphics.newImage("particle.png")
 
   -- 0 = title screen
   -- story
@@ -207,6 +211,16 @@ function love.load()
   --     objects.ball.body:setLinearVelocity(0, -50)
 
   --construct()
+
+  psystem = love.graphics.newParticleSystem(pImg, 100)
+  psystem:setParticleLifetime(0.01, 1) -- Particles live at least 2s and at most 5s.
+  psystem:setEmissionRate(40)
+  psystem:setSizeVariation(1)
+  psystem:setSizes(1,0.5,0.6,0.7,1.1,1.3)
+  psystem:setSpin(-1,1,0.5)
+  --psystem:setLinearAcceleration(-20, -20, 20, 20) -- Random movement in all directions.
+  psystem:setColors(255, 255, 255, 255, 255, 255, 255, 0) -- Fade to transparency.
+  
 
   --initial graphics setup
   love.graphics.setBackgroundColor(5, 5, 5) --set the background color to a nice blue
@@ -375,7 +389,13 @@ function love.update(dt)
 
  end
 
-  
+  xv, yv = objects.ball.body:getLinearVelocity( )
+  xv = -xv
+  yv = -yv
+  -- psystem:setLinearAcceleration(xv-25, yv-25, xv+25, yv+25)
+  psystem:setLinearAcceleration(-50, -50, 50, 50)
+  psystem:setPosition(objects.ball.body:getX(),objects.ball.body:getY())
+  psystem:update(dt)
 
   world:update(dt)
    -- prevX = love.mouse:getX()
@@ -422,6 +442,8 @@ function love.draw()
    love.graphics.draw(asg1, 0, 0, 0, 1, 1, 0, 0)
   elseif screenNumber == 100 then
     -------------------------
+
+    love.graphics.draw(psystem, 0, 0)
 
     love.graphics.setColor(50,50,50)
     -- love.graphics.setLineWidth( 0. )
