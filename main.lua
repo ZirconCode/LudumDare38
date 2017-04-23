@@ -4,69 +4,95 @@ lume = require "lume"
 serialize = require 'ser'
 
 
--- 800*600~w*h
--- tiles = 50*50
--- 0x0 to 15x12
-function gID(x,y)
-  return (x+(y*16))
+-- -- 800*600~w*h
+-- -- tiles = 50*50
+-- -- 0x0 to 15x12
+-- function gID(x,y)
+--   return (x+(y*16))
+-- end
+
+-- function gY(id)
+--   return math.floor(id / 16)
+-- end
+
+-- function gX(id)
+--   return (id % 16)
+-- end
+
+-- -- screen coords
+-- function gIDfromCoords(x,y)
+--   return gID(math.floor(x/50),math.floor(y/50))
+-- end
+
+function resetCombat(ballXVel)
+  -- toss ball in one players direction first -> ballXVel
+
+  objects.pone.body:setX(70)
+  objects.pone.body:setY(300)
+  objects.ptwo.body:setX(800-70)
+  objects.ptwo.body:setY(300)
+  objects.ball.body:setX(400)
+  objects.ball.body:setY(300)
+
+  objects.pone.body:setLinearVelocity(0,0)
+  objects.ptwo.body:setLinearVelocity(0,0)
+  objects.ball.body:setLinearVelocity(ballXVel,0)
+
+  resetTimer = 3
+
 end
 
-function gY(id)
-  return math.floor(id / 16)
-end
-
-function gX(id)
-  return (id % 16)
-end
-
--- screen coords
-function gIDfromCoords(x,y)
-  return gID(math.floor(x/50),math.floor(y/50))
-end
-
-function construct()
- 
-end
-
-function constructBlock(block,name)
-
-end
-
-function deleteObjectsAt(x,y)
-
-end
-
-function clear()
-
-end
 
 function love.load()
 
-  editor = true -- DISABLE LEVEL EDITING
+  -- tweaky constants
+
+  pvel = 500
+  prad = 20
+  radius = 10
+  c = 4000 -- gravity mass constant
+
+  -----
+
+  -- gamestate vars
+
+  reset = false
+  resetTimer = 0
+
+  --------
+
+  scoreOne = 0
+  scoreTwo = 0
+
+  lfont = love.graphics.newFont(50)
+  sfont = love.graphics.newFont(20)
+
+
+  -- editor = true -- DISABLE LEVEL EDITING
 
   -- WORLD BASICS
-  love.physics.setMeter(64) --the height of a meter our worlds will be 64px
+  love.physics.setMeter(64)
   -- no gravity
-  world = love.physics.newWorld(0, 0*1.6*9.81*64, true) --create a world for the bodies to exist in with horizontal gravity of 0 and vertical gravity of 9.81
-  world:setCallbacks(beginContact, endContact, preSolve, postSolve) -- collision callbacks
+  world = love.physics.newWorld(0, 0*1.6*9.81*64, true)
+  world:setCallbacks(beginContact, endContact, preSolve, postSolve) 
 
   objects = {}
 
   -- walls
   objects.twall = {}
-  objects.twall.body = love.physics.newBody(world, 800/2, 0) --remember, the shape (the rectangle we create next) anchors to the body from its center, so we have to move it to (650/2, 650-50/2)
-  objects.twall.shape = love.physics.newRectangleShape(800, 50) --make a rectangle with a width of 650 and a height of 50
-  objects.twall.fixture = love.physics.newFixture(objects.twall.body, objects.twall.shape); --attach shape to body
+  objects.twall.body = love.physics.newBody(world, 800/2, 0-13) 
+  objects.twall.shape = love.physics.newRectangleShape(800, 50) 
+  objects.twall.fixture = love.physics.newFixture(objects.twall.body, objects.twall.shape); 
   objects.twall.fixture:setUserData("topwall")
 
   objects.bwall = {}
-  objects.bwall.body = love.physics.newBody(world, 800/2, 600) --remember, the shape (the rectangle we create next) anchors to the body from its center, so we have to move it to (650/2, 650-50/2)
-  objects.bwall.shape = love.physics.newRectangleShape(800, 50) --make a rectangle with a width of 650 and a height of 50
-  objects.bwall.fixture = love.physics.newFixture(objects.bwall.body, objects.bwall.shape); --attach shape to body
+  objects.bwall.body = love.physics.newBody(world, 800/2, 600+13)
+  objects.bwall.shape = love.physics.newRectangleShape(800, 50) 
+  objects.bwall.fixture = love.physics.newFixture(objects.bwall.body, objects.bwall.shape); 
   objects.bwall.fixture:setUserData("topwall")
 
   -- pong ball
-  radius = 10
+  
   objects.ball = {}
   objects.ball.isPlayer = true
   objects.ball.body = love.physics.newBody(world, 800/2, 600/2, "dynamic")
@@ -81,7 +107,7 @@ function love.load()
   -- planets
 
   -- DYNAMIC?
-  prad = 40
+  
   objects.pone = {}
   objects.pone.isPlayer = true
   objects.pone.body = love.physics.newBody(world, 70, 300, "dynamic")
@@ -111,7 +137,7 @@ function love.load()
   -- cameraY = 0
 
   --picVictory = love.graphics.newImage("victory.png")
-  rotation = 0
+  -- rotation = 0
 
   -- blah = 0
 
@@ -140,12 +166,27 @@ function love.load()
   --construct()
 
   --initial graphics setup
-  love.graphics.setBackgroundColor(255, 5, 0) --set the background color to a nice blue
+  love.graphics.setBackgroundColor(5, 5, 5) --set the background color to a nice blue
   love.window.setMode(800, 600) --set the window dimensions to 650 by 650
+
+  resetCombat(0) -- init state wooo ^_^
+
 end
 
 function love.update(dt)
   
+  if reset == true then
+    resetCombat(0)
+    reset = false
+  end
+
+  if resetTimer > 0 then
+    resetTimer = resetTimer - dt*3
+    resetTimer = lume.clamp(resetTimer , 0, 99999999)
+  end
+
+
+  -- print(resetTimer)
 
   -- Physics?
 
@@ -161,7 +202,7 @@ function love.update(dt)
   distTwo = lume.distance(bX, bY, ptX, ptY, false)
   -- print(distOne)
 
-  c = 4000 -- gravity mass constant
+  
 
   -- del x, del y
   dX = bX - poX
@@ -187,7 +228,7 @@ function love.update(dt)
   dYt = c * dYt / distTwo
 
   -- total
-  print(dX .. ":" .. dY .. ":" .. dXt .. ":" .. dYt)
+  -- print(dX .. ":" .. dY .. ":" .. dXt .. ":" .. dYt)
   xForce = dXt + dX
   yForce = dYt + dY
 
@@ -207,7 +248,9 @@ function love.update(dt)
   --end
 
  -- if love.keyboard.isDown("down") or love.keyboard.isDown("s") then
-  pvel = 1000
+  
+
+ if(resetTimer == 0) then
 
   if love.keyboard.isDown("d") then
     objects.pone.body:applyForce(pvel, 0)
@@ -252,6 +295,10 @@ function love.update(dt)
     objects.ptwo.body:setLinearVelocity(20,y)
   end
 
+ end
+
+  
+
   world:update(dt)
    -- prevX = love.mouse:getX()
    -- prevY = love.mouse:getY()-cameraY
@@ -279,7 +326,12 @@ end
 
 function love.draw()
 
-  love.graphics.setColor(72, 160, 14) -- set the drawing color to green for the ground
+  love.graphics.setColor(50,50,50)
+  -- love.graphics.setLineWidth( 0. )
+  love.graphics.line(400,0,400,600)
+
+
+  love.graphics.setColor(255, 255, 255) -- set the drawing color to green for the ground
   love.graphics.polygon("fill", objects.twall.body:getWorldPoints(objects.twall.shape:getPoints())) -- draw
   love.graphics.polygon("fill", objects.bwall.body:getWorldPoints(objects.bwall.shape:getPoints())) -- draw
 
@@ -292,9 +344,18 @@ function love.draw()
   love.graphics.ellipse( "fill", objects.ptwo.body:getX(), objects.ptwo.body:getY(), prad, prad  )
 
 
+  if resetTimer > 0 then
+    love.graphics.setColor(255,0,0)
+    -- set font
+    love.graphics.setFont(lfont)
+    love.graphics.printf(" ~ ".. math.floor(resetTimer)+1 .. " ~ ", 400-300/2-10, 100, 300,"center")
+  end
+
   love.graphics.setColor(255,255,255)
-  -- love.graphics.setLineWidth( 0. )
-  love.graphics.line(400,0,400,600)
+  love.graphics.setFont(sfont)
+  love.graphics.printf("P1: ".. scoreOne, 50, 30, 300,"center")
+  love.graphics.printf("P2: ".. scoreTwo, 800-50-300, 30, 300,"center")
+
 
   -- CAMERA?
  -- love.graphics.translate( 0, cameraY ) -- TODO
@@ -319,11 +380,27 @@ function love.draw()
 end
 
 function beginContact(a, b, coll)
+  
+  -- in begin contact?
 
 end
  
 function endContact(a, b, coll)
+  -- indexA, indexB = coll:getChildren()
+  if (a:getUserData() == "pone" or b:getUserData() == "pone") then
+    if (a:getUserData() == "ball" or b:getUserData() == "ball") then
+      scoreTwo = scoreTwo + 1
+      reset = true
+    end
+  elseif (a:getUserData() == "ptwo" or b:getUserData() == "ptwo") then
+    if (a:getUserData() == "ball" or b:getUserData() == "ball") then
+      scoreOne = scoreOne + 1
+      reset = true
+    end
+  end
 
+  print(a:getUserData())
+  print(b:getUserData())
 end
  
 function preSolve(a, b, coll)
