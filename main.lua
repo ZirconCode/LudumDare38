@@ -24,6 +24,12 @@ serialize = require 'ser'
 --   return gID(math.floor(x/50),math.floor(y/50))
 -- end
 
+function resetGame()
+  
+
+
+end
+
 
 function resetCombat(ballXVel)
   -- toss ball in one players direction first -> ballXVel
@@ -219,8 +225,8 @@ function love.load()
   psystem:setSizes(1,0.5,0.6,0.7,1.1,1.3)
   psystem:setSpin(-1,1,0.5)
   --psystem:setLinearAcceleration(-20, -20, 20, 20) -- Random movement in all directions.
-  psystem:setColors(255, 255, 255, 255, 255, 255, 255, 0) -- Fade to transparency.
-  
+  psystem:setColors(255, 255, 255, 255, 200, 200, 0, 255, 255, 255, 255, 0) -- Fade to transparency.
+  -- TODO amazing wonderful cool particles, EXPLOSIONS>?
 
   --initial graphics setup
   love.graphics.setBackgroundColor(5, 5, 5) --set the background color to a nice blue
