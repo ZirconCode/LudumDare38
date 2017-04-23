@@ -540,7 +540,14 @@ function love.draw()
    love.graphics.draw(vImg, 0, 0, 0, 1, 1, 0, 0)
    love.graphics.setColor(255,0,0)
    love.graphics.setFont(lfont)
-   love.graphics.printf(" Player X WON! ", 300-150, 50, 500,"center")
+   if pWinner == 1 then
+    love.graphics.printf("Player 1 Won! ", 300-150, 50, 500,"center")
+   elseif pWinner == 2 then
+      love.graphics.printf("Player 2 Won! ", 300-150, 50, 500,"center")
+    else
+      love.graphics.printf("Everybody Loses!", 300-150, 50, 500,"center") -- there is only lose
+    end
+   
   elseif screenNumber == 100 then
     -------------------------
 
