@@ -24,6 +24,7 @@ serialize = require 'ser'
 --   return gID(math.floor(x/50),math.floor(y/50))
 -- end
 
+
 function resetCombat(ballXVel)
   -- toss ball in one players direction first -> ballXVel
 
@@ -68,9 +69,11 @@ function love.load()
 
   pOneGod = 0
   pTwoGod = 0
+
   screenNumber = 0 
 
   asg1 = love.graphics.newImage("Asgard1.jpg")
+  asg0 = love.graphics.newImage("title.jpg")
 
   -- 0 = title screen
   -- story
@@ -78,6 +81,10 @@ function love.load()
   -- character choice x 2
   -- game
   -- victory screen & play again
+
+  music = love.audio.newSource("theme.ogg")
+  music:setLooping(true)
+  music:play() -- from beginning TODO ?
 
   --------
 
@@ -210,7 +217,10 @@ function love.load()
 end
 
 function love.update(dt)
-  
+
+  if screenNumber == 100 then ---------------------
+
+
   if gameTime == 0 then
     -- victory screen
     -- TODO
@@ -371,11 +381,21 @@ function love.update(dt)
    -- prevX = love.mouse:getX()
    -- prevY = love.mouse:getY()-cameraY
 
+  end ---------------------
+
 end
 
 function love.keyreleased(key)
 
- -- if key == "l" then
+  if key == "space" then 
+
+    if screenNumber < 1 then
+      screenNumber = screenNumber +1
+    else
+      screenNumber = 100
+    end
+
+  end
 
 end
  
@@ -394,62 +414,77 @@ end
 
 function love.draw()
 
-  love.graphics.setColor(50,50,50)
-  -- love.graphics.setLineWidth( 0. )
-  love.graphics.line(400,0,400,600)
+  if screenNumber == 0 then
+   love.graphics.setColor(255, 255, 255, 255)
+   love.graphics.draw(asg0, 0, 0, 0, 1, 1, 0, 0)
+  elseif screenNumber == 1 then
+   love.graphics.setColor(255, 255, 255, 255)
+   love.graphics.draw(asg1, 0, 0, 0, 1, 1, 0, 0)
+  elseif screenNumber == 100 then
+    -------------------------
 
-  love.graphics.setColor(255,255,0)
-  love.graphics.ellipse( "fill", objects.ball.body:getX(), objects.ball.body:getY(), radius, radius  )
+    love.graphics.setColor(50,50,50)
+    -- love.graphics.setLineWidth( 0. )
+    love.graphics.line(400,0,400,600)
 
-  love.graphics.setColor(255,0,255)
-  love.graphics.ellipse( "fill", objects.pone.body:getX(), objects.pone.body:getY(), prad, prad  )
-  love.graphics.setColor(0,255,255)
-  love.graphics.ellipse( "fill", objects.ptwo.body:getX(), objects.ptwo.body:getY(), prad, prad  )
+    love.graphics.setColor(255,255,0)
+    love.graphics.ellipse( "fill", objects.ball.body:getX(), objects.ball.body:getY(), radius, radius  )
 
-  -- love.graphics.setColor(0,255,255)
-  -- love.graphics.polygon("fill", )
+    love.graphics.setColor(255,0,255)
+    love.graphics.ellipse( "fill", objects.pone.body:getX(), objects.pone.body:getY(), prad, prad  )
+    love.graphics.setColor(0,255,255)
+    love.graphics.ellipse( "fill", objects.ptwo.body:getX(), objects.ptwo.body:getY(), prad, prad  )
+
+    -- love.graphics.setColor(0,255,255)
+    -- love.graphics.polygon("fill", )
 
 
-  if resetTimer > 0 then
-    love.graphics.setColor(255,0,0)
-    -- set font
-    love.graphics.setFont(lfont)
-    love.graphics.printf(" ~ ".. math.floor(resetTimer)+1 .. " ~ ", 400-300/2-10, 100, 300,"center")
-  end
+    if resetTimer > 0 then
+      love.graphics.setColor(255,0,0)
+      -- set font
+      love.graphics.setFont(lfont)
+      love.graphics.printf(" ~ ".. math.floor(resetTimer)+1 .. " ~ ", 400-300/2-10, 100, 300,"center")
+    end
 
-  if outTime > 0 then
-    love.graphics.setColor(255,0,0)
-    -- set font
+    if outTime > 0 then
+      love.graphics.setColor(255,0,0)
+      -- set font
+      love.graphics.setFont(sfont)
+      love.graphics.printf("Out in  ".. (3-math.floor(outTime)) .. "s", 400-300/2-10, 100, 300,"center")
+    end
+
+    love.graphics.setColor(255,255,255)
     love.graphics.setFont(sfont)
-    love.graphics.printf("Out in  ".. (3-math.floor(outTime)) .. "s", 400-300/2-10, 100, 300,"center")
+    love.graphics.printf("P1: ".. scoreOne, 50, 30, 300,"center")
+    love.graphics.printf("P2: ".. scoreTwo, 800-50-300, 30, 300,"center")
+
+    love.graphics.setColor(255 ,255,255)
+    love.graphics.setFont(sfont)
+    love.graphics.printf("" .. math.floor(gameTime) .. "s", 300-50, 30, 300, "center")
+
+
+    if objects.ball.body:getX() < 0 then
+      love.graphics.setColor(255,0,0)
+      love.graphics.ellipse( "line", 0 , objects.ball.body:getY() , prad/2, prad/2 )
+      lvx, lvy = objects.ball.body:getLinearVelocity( )
+      love.graphics.line(0,objects.ball.body:getY(),0+lvx,objects.ball.body:getY()+lvy)
+    elseif objects.ball.body:getX() > 800 then
+      love.graphics.setColor(255,0,0)
+      love.graphics.ellipse( "line", 800 , objects.ball.body:getY() , prad/2, prad/2 )
+      lvx, lvy = objects.ball.body:getLinearVelocity( )
+      love.graphics.line(800,objects.ball.body:getY(),800+lvx,objects.ball.body:getY()+lvy)
+    end
+
+
+    love.graphics.setColor(255, 255, 255) -- set the drawing color to green for the ground
+    love.graphics.polygon("fill", objects.twall.body:getWorldPoints(objects.twall.shape:getPoints())) -- draw
+    love.graphics.polygon("fill", objects.bwall.body:getWorldPoints(objects.bwall.shape:getPoints())) -- draw
+
+    -------------------------
   end
 
-  love.graphics.setColor(255,255,255)
-  love.graphics.setFont(sfont)
-  love.graphics.printf("P1: ".. scoreOne, 50, 30, 300,"center")
-  love.graphics.printf("P2: ".. scoreTwo, 800-50-300, 30, 300,"center")
-
-  love.graphics.setColor(255 ,255,255)
-  love.graphics.setFont(sfont)
-  love.graphics.printf("" .. math.floor(gameTime) .. "s", 300-50, 30, 300, "center")
 
 
-  if objects.ball.body:getX() < 0 then
-    love.graphics.setColor(255,0,0)
-    love.graphics.ellipse( "line", 0 , objects.ball.body:getY() , prad/2, prad/2 )
-    lvx, lvy = objects.ball.body:getLinearVelocity( )
-    love.graphics.line(0,objects.ball.body:getY(),0+lvx,objects.ball.body:getY()+lvy)
-  elseif objects.ball.body:getX() > 800 then
-    love.graphics.setColor(255,0,0)
-    love.graphics.ellipse( "line", 800 , objects.ball.body:getY() , prad/2, prad/2 )
-    lvx, lvy = objects.ball.body:getLinearVelocity( )
-    love.graphics.line(800,objects.ball.body:getY(),800+lvx,objects.ball.body:getY()+lvy)
-  end
-
-
-  love.graphics.setColor(255, 255, 255) -- set the drawing color to green for the ground
-  love.graphics.polygon("fill", objects.twall.body:getWorldPoints(objects.twall.shape:getPoints())) -- draw
-  love.graphics.polygon("fill", objects.bwall.body:getWorldPoints(objects.bwall.shape:getPoints())) -- draw
 
 
   -- CAMERA?
@@ -470,6 +505,9 @@ function love.draw()
 
   -- love.graphics.setColor(0, 250, 0)
   -- love.graphics.polygon('fill', 100, 100, 200, 100, 150, 200)
+
+  -- Story Images: TODO
+
 
 
 end
