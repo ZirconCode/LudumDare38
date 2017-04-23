@@ -88,6 +88,11 @@ function love.load()
   asg4 = love.graphics.newImage("asg4.png")
   asg5 = love.graphics.newImage("asg5.png")
 
+  planet1 = love.graphics.newImage("planet1.png")
+  planet2 = love.graphics.newImage("planet2.png")
+  planet3 = love.graphics.newImage("planet3.png")
+  planet4 = love.graphics.newImage("planet4.png")
+
   iImg = love.graphics.newImage("inst.jpg")
 
   sImg = love.graphics.newImage("charsel.png")
@@ -560,10 +565,32 @@ function love.draw()
     love.graphics.setColor(255,255,0)
     love.graphics.ellipse( "fill", objects.ball.body:getX(), objects.ball.body:getY(), radius, radius  )
 
-    love.graphics.setColor(255,0,255)
-    love.graphics.ellipse( "fill", objects.pone.body:getX(), objects.pone.body:getY(), prad, prad  )
-    love.graphics.setColor(0,255,255)
-    love.graphics.ellipse( "fill", objects.ptwo.body:getX(), objects.ptwo.body:getY(), prad, prad  )
+    -- draw planets oh no nonono
+    love.graphics.setColor(255, 255, 255, 255)
+    if pOneGod == 1 then
+      love.graphics.draw(planet1, objects.pone.body:getX()-30, objects.pone.body:getY()-30)
+    elseif pOneGod == 2 then
+      love.graphics.draw(planet2, objects.pone.body:getX()-30, objects.pone.body:getY()-30)
+      elseif pOneGod == 3 then
+      love.graphics.draw(planet3, objects.pone.body:getX()-30, objects.pone.body:getY()-30)
+      elseif pOneGod == 4 then
+      love.graphics.draw(planet4, objects.pone.body:getX()-30, objects.pone.body:getY()-30)
+    end
+    love.graphics.setColor(255, 255, 255, 255)
+    if pTwoGod == 1 then
+      love.graphics.draw(planet1, objects.ptwo.body:getX()-30, objects.ptwo.body:getY()-30)
+    elseif pTwoGod == 2 then
+      love.graphics.draw(planet2, objects.ptwo.body:getX()-30, objects.ptwo.body:getY()-30)
+      elseif pTwoGod == 3 then
+      love.graphics.draw(planet3, objects.ptwo.body:getX()-30, objects.ptwo.body:getY()-30)
+      elseif pTwoGod == 4 then
+      love.graphics.draw(planet4, objects.ptwo.body:getX()-30, objects.ptwo.body:getY()-30)
+    end
+
+    -- love.graphics.setColor(255,0,255)
+    -- -- love.graphics.ellipse( "fill", objects.pone.body:getX(), objects.pone.body:getY(), prad, prad  )
+    -- love.graphics.setColor(0,255,255)
+    -- love.graphics.ellipse( "fill", objects.ptwo.body:getX(), objects.ptwo.body:getY(), prad, prad  )
 
     -- love.graphics.setColor(0,255,255)
     -- love.graphics.polygon("fill", )

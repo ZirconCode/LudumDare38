@@ -10,11 +10,13 @@ A 2 Player game (other person not required, just pretend your hands are differen
 Instructions
 =========
 
-WASD - Arrow Keys for Player 1/2.
-Space and 1/2/3/4 for Selecting at beginning.
+WASD - Arrow Keys for Player 1 - 2.
+Space and 1,2,3,4 for Selecting at beginning.
 
-You lose if you touch the asteroid and if it flies out on your side for more than 3 seconds.
+You lose if you touch the asteroid or if it flies out on your side for more than 3 seconds.
 Your planet attracts the asteroid (because you are attractive *cough* massive, you pretty person you).
+
+After 3 minutes of bloody battle the victor is decided (or you both lose).
 
 Have Fun!
 
