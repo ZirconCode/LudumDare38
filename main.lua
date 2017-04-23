@@ -47,11 +47,11 @@ function love.load()
 
   -- tweaky constants
 
-  pvel = 450
+  pvel = 650
   prad = 30
   radius = 15
   c = 4500*2 -- gravity mass constant
-  lindamp = 0.8
+  lindamp = 1.5
 
   -----
 
@@ -222,10 +222,10 @@ function love.update(dt)
   if outTime > 3 then
     if objects.ball.body:getX() < 0 then
       scoreTwo = scoreTwo+1
-      resetCombat(50)
+      resetCombat(-50)
     elseif objects.ball.body:getX() > 800 then
       scoreOne = scoreOne+1
-      resetCombat(-50)
+      resetCombat(50)
     end
     outTime = 0
   end
