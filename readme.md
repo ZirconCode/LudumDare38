@@ -7,8 +7,9 @@ A 2 Player game (other person not required, just pretend your hands are differen
 
 
 
-Instructions:
+Instructions
 =========
+
 WASD - Arrow Keys for Player 1/2.
 Space and 1/2/3/4 for Selecting at beginning.
 
@@ -22,4 +23,5 @@ Have Fun!
 
 TODO
 =========
+
 - Oh no this code.... oh no....
