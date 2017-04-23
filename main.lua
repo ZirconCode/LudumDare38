@@ -50,25 +50,26 @@ function love.load()
   --musicPiece1:setPitch(0.4)
   --musicPiece1:play() -- change whatever... no plan TODO
 
-  cameraY = 0
+  -- STATIC CAMERA
+  -- cameraY = 0
 
   --picVictory = love.graphics.newImage("victory.png")
   rotation = 0
 
-  blah = 0
+  -- blah = 0
 
-  objects = {}
+  -- objects = {}
 
-  tiles = {}
+  -- tiles = {}
   
-  for i = 0, (gID(15,12)) do
-    tiles[i] = 0
-  end
-  tiles[5] = 1
-  tiles[15] = 1
-  tiles[0] = 1
-  tiles[30] = 1
-  tiles[16*12-1] = 1
+  -- for i = 0, (gID(15,12)) do
+  --   tiles[i] = 0
+  -- end
+  -- tiles[5] = 1
+  -- tiles[15] = 1
+  -- tiles[0] = 1
+  -- tiles[30] = 1
+  -- tiles[16*12-1] = 1
 
   --tiles[key] = 'test'
   --print(tiles[{2,1}])
@@ -111,12 +112,12 @@ function love.mousereleased( x, y, button )
  
 --  id = os.time()  -- oh dear TODO... its in sec.
     --  id = love.math.random( 0, 1000 ) * id--  this is so good
-    print(x .. ":" .. y)
-    if tiles[gIDfromCoords(x,y)] == 1 then
-      tiles[gIDfromCoords(x,y)] = 0
-    else
-      tiles[gIDfromCoords(x,y)] = 1
-    end
+    -- print(x .. ":" .. y)
+    -- if tiles[gIDfromCoords(x,y)] == 1 then
+    --   tiles[gIDfromCoords(x,y)] = 0
+    -- else
+    --   tiles[gIDfromCoords(x,y)] = 1
+    -- end
 
 end
 
@@ -125,21 +126,21 @@ function love.draw()
   -- CAMERA?
  -- love.graphics.translate( 0, cameraY ) -- TODO
 
-  for i = 0, (gID(15,12)) do
-    if (tiles[i] == 0) then
-      love.graphics.setColor(255,0,0)
-    end
-    if(tiles[i] == 1) then
-      love.graphics.setColor(0,0,255)
-    end
-    y = gY(i)
-    x = gX(i)
-    --print(i .. "," .. x .. ":" .. y)
-    love.graphics.polygon("fill", x*50,y*50, x*50, y*50+50, x*50+50,y*50+50, x*50+50, y*50)
-  end
+  -- for i = 0, (gID(15,12)) do
+  --   if (tiles[i] == 0) then
+  --     love.graphics.setColor(255,0,0)
+  --   end
+  --   if(tiles[i] == 1) then
+  --     love.graphics.setColor(0,0,255)
+  --   end
+  --   y = gY(i)
+  --   x = gX(i)
+  --   --print(i .. "," .. x .. ":" .. y)
+  --   love.graphics.polygon("fill", x*50,y*50, x*50, y*50+50, x*50+50,y*50+50, x*50+50, y*50)
+  -- end
 
-  love.graphics.setColor(0, 250, 0)
-  love.graphics.polygon('fill', 100, 100, 200, 100, 150, 200)
+  -- love.graphics.setColor(0, 250, 0)
+  -- love.graphics.polygon('fill', 100, 100, 200, 100, 150, 200)
 
 
 end
