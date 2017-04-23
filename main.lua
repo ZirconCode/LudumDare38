@@ -47,17 +47,23 @@ function love.load()
 
   -- tweaky constants
 
-  pvel = 350
+  pvel = 450
   prad = 30
   radius = 15
   c = 4500*2 -- gravity mass constant
+  lindamp = 0.8
 
   -----
 
   -- gamestate vars
 
   reset = false
+  resetFor = 1 -- player 1?
   resetTimer = 0
+
+  outTime = 0 -- ballouttime (3second max)
+
+  gameTime = 60*3 -- 3 minutes?
 
   --------
 
@@ -66,6 +72,7 @@ function love.load()
 
   lfont = love.graphics.newFont(50)
   sfont = love.graphics.newFont(20)
+
 
 
   -- editor = true -- DISABLE LEVEL EDITING
@@ -128,6 +135,7 @@ function love.load()
   objects.pone.fixture = love.physics.newFixture(objects.pone.body, objects.pone.shape, 1) -- Attach fixture to body and give it a density of 1.
   --objects.ball.fixture:setFriction(0.3) -- TODO 
   objects.pone.body:setFixedRotation( true )
+  objects.pone.body:setLinearDamping(lindamp)
   objects.pone.fixture:setUserData("pone")
 
   objects.ptwo = {}
@@ -137,6 +145,7 @@ function love.load()
   objects.ptwo.fixture = love.physics.newFixture(objects.ptwo.body, objects.ptwo.shape, 1) -- Attach fixture to body and give it a density of 1.
   --objects.ball.fixture:setFriction(0.3) -- TODO 
   objects.ptwo.body:setFixedRotation( true )
+  objects.ptwo.body:setLinearDamping(lindamp)
   objects.ptwo.fixture:setUserData("ptwo")
 
 
@@ -188,8 +197,20 @@ end
 
 function love.update(dt)
   
+  if gameTime > 0 and resetTimer == 0 then
+    -- print(gameTime)
+    gameTime = gameTime - dt
+    gameTime = lume.clamp(gameTime, 0, 99999999)
+  end
+
+  -- if gametime = 0?? TODO
+
   if reset == true then
-    resetCombat(0)
+    if resetFor == 1 then
+      resetCombat(50)
+    elseif resetFor == 2 then
+      resetCombat(-50)
+    end
     reset = false
   end
 
@@ -198,6 +219,16 @@ function love.update(dt)
     resetTimer = lume.clamp(resetTimer , 0, 99999999)
   end
 
+  if outTime > 3 then
+    if objects.ball.body:getX() < 0 then
+      scoreTwo = scoreTwo+1
+      resetCombat(50)
+    elseif objects.ball.body:getX() > 800 then
+      scoreOne = scoreOne+1
+      resetCombat(-50)
+    end
+    outTime = 0
+  end
 
   -- print(resetTimer)
 
@@ -308,6 +339,13 @@ function love.update(dt)
     objects.ptwo.body:setLinearVelocity(20,y)
   end
 
+  if objects.ball.body:getX() < 0 or objects.ball.body:getX() > 800 then
+    outTime = outTime + dt
+  else
+    outTime = 0
+  end
+  print(outTime)
+
  end
 
   
@@ -351,6 +389,9 @@ function love.draw()
   love.graphics.setColor(0,255,255)
   love.graphics.ellipse( "fill", objects.ptwo.body:getX(), objects.ptwo.body:getY(), prad, prad  )
 
+  -- love.graphics.setColor(0,255,255)
+  -- love.graphics.polygon("fill", )
+
 
   if resetTimer > 0 then
     love.graphics.setColor(255,0,0)
@@ -359,10 +400,22 @@ function love.draw()
     love.graphics.printf(" ~ ".. math.floor(resetTimer)+1 .. " ~ ", 400-300/2-10, 100, 300,"center")
   end
 
+  if outTime > 0 then
+    love.graphics.setColor(255,0,0)
+    -- set font
+    love.graphics.setFont(sfont)
+    love.graphics.printf("Out in  ".. (3-math.floor(outTime)) .. "s", 400-300/2-10, 100, 300,"center")
+  end
+
   love.graphics.setColor(255,255,255)
   love.graphics.setFont(sfont)
   love.graphics.printf("P1: ".. scoreOne, 50, 30, 300,"center")
   love.graphics.printf("P2: ".. scoreTwo, 800-50-300, 30, 300,"center")
+
+  love.graphics.setColor(255 ,255,255)
+  love.graphics.setFont(sfont)
+  love.graphics.printf("" .. math.floor(gameTime) .. "s", 300-50, 30, 300, "center")
+
 
   if objects.ball.body:getX() < 0 then
     love.graphics.setColor(255,0,0)
@@ -415,11 +468,13 @@ function endContact(a, b, coll)
   if (a:getUserData() == "pone" or b:getUserData() == "pone") then
     if (a:getUserData() == "ball" or b:getUserData() == "ball") then
       scoreTwo = scoreTwo + 1
+      resetFor = 1
       reset = true
     end
   elseif (a:getUserData() == "ptwo" or b:getUserData() == "ptwo") then
     if (a:getUserData() == "ball" or b:getUserData() == "ball") then
       scoreOne = scoreOne + 1
+      resetFor = 2
       reset = true
     end
   end
