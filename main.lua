@@ -109,8 +109,20 @@ function love.load()
   -- victory screen & play again
 
   music = love.audio.newSource("theme.ogg")
+  music:setVolume(0.2)
   music:setLooping(true)
   music:play() -- from beginning TODO ?
+
+  svoice = love.audio.newSource("selectplayer.ogg")
+  svoice:setLooping(false)
+  voice1 = love.audio.newSource("voice1.ogg")
+  voice1:setLooping(false)
+  voice2 = love.audio.newSource("voice2.ogg")
+  voice2:setLooping(false)
+  voice3 = love.audio.newSource("voice3.ogg")
+  voice3:setLooping(false)
+  voice4 = love.audio.newSource("voice4.ogg")
+  voice4:setLooping(false)
 
   --------
 
@@ -443,6 +455,7 @@ function love.keyreleased(key)
       screenNumber = screenNumber +1
     elseif screenNumber == 5 then
       screenNumber = 50
+      svoice:play()
     elseif screenNumber == 60 then
       screenNumber = 100
     end
@@ -455,15 +468,23 @@ function love.keyreleased(key)
     if key == "1" then 
       pTwoGod = 1
       screenNumber = 60
+      voice1:play()
+      love.timer.sleep(3) -- oH NOOOOO
     elseif key == "2" then 
       pTwoGod = 2
       screenNumber = 60
+       voice2:play()
+       love.timer.sleep(3)
       elseif key == "3" then 
       pTwoGod = 3
       screenNumber = 60
+       voice3:play()
+       love.timer.sleep(3)
       elseif key == "4" then 
       pTwoGod = 4
       screenNumber = 60
+       voice4:play()
+       love.timer.sleep(3)
     end
     print(pTwoGod)
   end
@@ -473,15 +494,23 @@ function love.keyreleased(key)
   if key == "1" then 
       pOneGod = 1
       screenNumber = 51
+       voice1:play()
+       love.timer.sleep(3)
     elseif key == "2" then 
       pOneGod = 2
       screenNumber = 51
+       voice2:play()
+       love.timer.sleep(3)
       elseif key == "3" then 
       pOneGod = 3
       screenNumber = 51
+       voice3:play()
+       love.timer.sleep(3)
     elseif key == "4" then 
       pOneGod = 4
       screenNumber = 51
+       voice4:play()
+       love.timer.sleep(3)
     end
 
     print(pOneGod)
@@ -533,13 +562,13 @@ function love.draw()
    love.graphics.draw(sImg, 0, 0, 0, 1, 1, 0, 0)
    love.graphics.setColor(255,0,0)
    love.graphics.setFont(sfont)
-   love.graphics.printf(" Player 1 Select your Champion", 300, 300, 200,"center")
+   love.graphics.printf("Left Player Select your Champion", 300, 300, 200,"center")
   elseif screenNumber == 51 then
    love.graphics.setColor(255, 255, 255, 255)
    love.graphics.draw(sImg, 0, 0, 0, 1, 1, 0, 0)
    love.graphics.setColor(255,0,0)
    love.graphics.setFont(sfont)
-   love.graphics.printf(" Player 2 Select your Champion", 300, 300, 200,"center")
+   love.graphics.printf("Right Player Select your Champion", 300, 300, 200,"center")
   elseif screenNumber == 999 then
    love.graphics.setColor(255, 255, 255, 255)
    love.graphics.draw(vImg, 0, 0, 0, 1, 1, 0, 0)
