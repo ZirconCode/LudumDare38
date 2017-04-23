@@ -78,10 +78,19 @@ function love.load()
   pOneGod = 0
   pTwoGod = 0
 
-  screenNumber = 0 
+  screenNumber = 0 --999 
 
   asg1 = love.graphics.newImage("Asgard1.jpg")
   asg0 = love.graphics.newImage("title.jpg")
+
+  asg2 = love.graphics.newImage("asg2.png")
+  asg3 = love.graphics.newImage("asg3.png")
+  asg4 = love.graphics.newImage("asg4.png")
+  asg5 = love.graphics.newImage("asg5.png")
+
+  iImg = love.graphics.newImage("inst.jpg")
+
+  sImg = love.graphics.newImage("charsel.png")
 
   vImg = love.graphics.newImage("victory.png")
 
@@ -106,7 +115,7 @@ function love.load()
   lfont = love.graphics.newFont(50)
   sfont = love.graphics.newFont(20)
 
-
+  pWinner = 0 -- player 1/2 is winner
 
   -- editor = true -- DISABLE LEVEL EDITING
 
@@ -242,10 +251,18 @@ function love.update(dt)
 
   if screenNumber == 100 then ---------------------
 
-
   if gameTime == 0 then
     -- victory screen
     -- TODO
+    if scoreOne > scoreTwo then
+      pWinner = 1
+    elseif scoreTwo > scoreOne then
+      pWinner = 2
+    else
+      pWinner = 3
+    end
+
+    screenNumber = 999
   end
 
   if gameTime > 0 and resetTimer == 0 then
@@ -417,12 +434,53 @@ function love.keyreleased(key)
 
   if key == "space" then 
 
-    if screenNumber < 1 then
+    if screenNumber < 5 then
       screenNumber = screenNumber +1
-    else
+    elseif screenNumber == 5 then
+      screenNumber = 50
+    elseif screenNumber == 60 then
       screenNumber = 100
     end
 
+  end
+
+  --- PLEASE NOOOO
+
+  if screenNumber == 51 then
+    if key == "1" then 
+      pTwoGod = 1
+      screenNumber = 60
+    elseif key == "2" then 
+      pTwoGod = 2
+      screenNumber = 60
+      elseif key == "3" then 
+      pTwoGod = 3
+      screenNumber = 60
+      elseif key == "4" then 
+      pTwoGod = 4
+      screenNumber = 60
+    end
+    print(pTwoGod)
+  end
+
+  if screenNumber == 50 then
+
+  if key == "1" then 
+      pOneGod = 1
+      screenNumber = 51
+    elseif key == "2" then 
+      pOneGod = 2
+      screenNumber = 51
+      elseif key == "3" then 
+      pOneGod = 3
+      screenNumber = 51
+    elseif key == "4" then 
+      pOneGod = 4
+      screenNumber = 51
+    end
+
+    print(pOneGod)
+  
   end
 
 end
@@ -442,12 +500,47 @@ end
 
 function love.draw()
 
+ ------------- ahhhhhhh its so uglyyyyyyyyyyyy oh noooo
+  -- This is some genius code:
   if screenNumber == 0 then
    love.graphics.setColor(255, 255, 255, 255)
    love.graphics.draw(asg0, 0, 0, 0, 1, 1, 0, 0)
   elseif screenNumber == 1 then
    love.graphics.setColor(255, 255, 255, 255)
    love.graphics.draw(asg1, 0, 0, 0, 1, 1, 0, 0)
+   elseif screenNumber == 2 then
+   love.graphics.setColor(255, 255, 255, 255)
+   love.graphics.draw(asg2, 0, 0, 0, 1, 1, 0, 0)
+   elseif screenNumber == 3 then
+   love.graphics.setColor(255, 255, 255, 255)
+   love.graphics.draw(asg3, 0, 0, 0, 1, 1, 0, 0)
+   elseif screenNumber == 4 then
+   love.graphics.setColor(255, 255, 255, 255)
+   love.graphics.draw(asg4, 0, 0, 0, 1, 1, 0, 0)
+   elseif screenNumber == 5 then
+   love.graphics.setColor(255, 255, 255, 255)
+   love.graphics.draw(asg5, 0, 0, 0, 1, 1, 0, 0)
+   elseif screenNumber == 60 then
+   love.graphics.setColor(255, 255, 255, 255)
+   love.graphics.draw(iImg, 0, 0, 0, 1, 1, 0, 0)
+  elseif screenNumber == 50 then
+   love.graphics.setColor(255, 255, 255, 255)
+   love.graphics.draw(sImg, 0, 0, 0, 1, 1, 0, 0)
+   love.graphics.setColor(255,0,0)
+   love.graphics.setFont(sfont)
+   love.graphics.printf(" Player 1 Select your Champion", 300, 300, 200,"center")
+  elseif screenNumber == 51 then
+   love.graphics.setColor(255, 255, 255, 255)
+   love.graphics.draw(sImg, 0, 0, 0, 1, 1, 0, 0)
+   love.graphics.setColor(255,0,0)
+   love.graphics.setFont(sfont)
+   love.graphics.printf(" Player 2 Select your Champion", 300, 300, 200,"center")
+  elseif screenNumber == 999 then
+   love.graphics.setColor(255, 255, 255, 255)
+   love.graphics.draw(vImg, 0, 0, 0, 1, 1, 0, 0)
+   love.graphics.setColor(255,0,0)
+   love.graphics.setFont(lfont)
+   love.graphics.printf(" Player X WON! ", 300-150, 50, 500,"center")
   elseif screenNumber == 100 then
     -------------------------
 
