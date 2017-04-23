@@ -39,6 +39,7 @@ function resetCombat(ballXVel)
   objects.ball.body:setLinearVelocity(ballXVel,0)
 
   resetTimer = 3
+  outTime = 0
 
 end
 
@@ -197,13 +198,16 @@ end
 
 function love.update(dt)
   
+  if gameTime == 0 then
+    -- victory screen
+    -- TODO
+  end
+
   if gameTime > 0 and resetTimer == 0 then
     -- print(gameTime)
     gameTime = gameTime - dt
     gameTime = lume.clamp(gameTime, 0, 99999999)
   end
-
-  -- if gametime = 0?? TODO
 
   if reset == true then
     if resetFor == 1 then
@@ -344,7 +348,7 @@ function love.update(dt)
   else
     outTime = 0
   end
-  print(outTime)
+  -- print(outTime)
 
  end
 
