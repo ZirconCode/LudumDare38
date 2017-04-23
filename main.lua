@@ -25,7 +25,7 @@ serialize = require 'ser'
 -- end
 
 function resetGame()
-  
+
 
 
 end
@@ -82,6 +82,8 @@ function love.load()
 
   asg1 = love.graphics.newImage("Asgard1.jpg")
   asg0 = love.graphics.newImage("title.jpg")
+
+  vImg = love.graphics.newImage("victory.png")
 
   pImg = love.graphics.newImage("particle.png")
 
