@@ -47,10 +47,10 @@ function love.load()
 
   -- tweaky constants
 
-  pvel = 500
-  prad = 20
-  radius = 10
-  c = 4000 -- gravity mass constant
+  pvel = 350
+  prad = 30
+  radius = 15
+  c = 4500*2 -- gravity mass constant
 
   -----
 
@@ -81,15 +81,28 @@ function love.load()
   -- walls
   objects.twall = {}
   objects.twall.body = love.physics.newBody(world, 800/2, 0-13) 
-  objects.twall.shape = love.physics.newRectangleShape(800, 50) 
+  objects.twall.shape = love.physics.newRectangleShape(800+9999, 50) -- TODO: flyout? !!!
+  --- FLYOUT TIMEOUT ON SIDE = LOSE GAME, 2 seconds? !! TODO
   objects.twall.fixture = love.physics.newFixture(objects.twall.body, objects.twall.shape); 
   objects.twall.fixture:setUserData("topwall")
 
   objects.bwall = {}
   objects.bwall.body = love.physics.newBody(world, 800/2, 600+13)
-  objects.bwall.shape = love.physics.newRectangleShape(800, 50) 
+  objects.bwall.shape = love.physics.newRectangleShape(800+9999, 50) 
   objects.bwall.fixture = love.physics.newFixture(objects.bwall.body, objects.bwall.shape); 
   objects.bwall.fixture:setUserData("topwall")
+
+  -- TODO BACKWALLS?
+  objects.wallo = {}
+  objects.wallo.body = love.physics.newBody(world, 800/2, 600+13)
+  objects.wallo.shape = love.physics.newRectangleShape(800+9999, 50) 
+  objects.wallo.fixture = love.physics.newFixture(objects.wallo.body, objects.wallo.shape); 
+  objects.wallo.fixture:setUserData("topwall")
+  objects.wallt = {}
+  objects.wallt.body = love.physics.newBody(world, 800/2, 600+13)
+  objects.wallt.shape = love.physics.newRectangleShape(600, 50) 
+  objects.wallt.fixture = love.physics.newFixture(objects.wallt.body, objects.wallt.shape); 
+  objects.wallt.fixture:setUserData("sidewall")
 
   -- pong ball
   
@@ -212,8 +225,8 @@ function love.update(dt)
   dX = dX / norm
   dY = dY / norm
   -- apply gravity
-  dX = c * dX / distOne
-  dY = c * dY / distOne
+  dX = c * dX / distOne--(distOne^2)
+  dY = c * dY / distOne--(distOne^2)
 
   -- and number two
   -- del x, del y
@@ -224,8 +237,8 @@ function love.update(dt)
   dXt = dXt / normt
   dYt = dYt / normt
   -- apply gravity
-  dXt = c * dXt / distTwo
-  dYt = c * dYt / distTwo
+  dXt = c * dXt / distTwo--(distTwo^2)
+  dYt = c * dYt / distTwo--(distTwo^2)
 
   -- total
   -- print(dX .. ":" .. dY .. ":" .. dXt .. ":" .. dYt)
@@ -330,11 +343,6 @@ function love.draw()
   -- love.graphics.setLineWidth( 0. )
   love.graphics.line(400,0,400,600)
 
-
-  love.graphics.setColor(255, 255, 255) -- set the drawing color to green for the ground
-  love.graphics.polygon("fill", objects.twall.body:getWorldPoints(objects.twall.shape:getPoints())) -- draw
-  love.graphics.polygon("fill", objects.bwall.body:getWorldPoints(objects.bwall.shape:getPoints())) -- draw
-
   love.graphics.setColor(255,255,0)
   love.graphics.ellipse( "fill", objects.ball.body:getX(), objects.ball.body:getY(), radius, radius  )
 
@@ -355,6 +363,23 @@ function love.draw()
   love.graphics.setFont(sfont)
   love.graphics.printf("P1: ".. scoreOne, 50, 30, 300,"center")
   love.graphics.printf("P2: ".. scoreTwo, 800-50-300, 30, 300,"center")
+
+  if objects.ball.body:getX() < 0 then
+    love.graphics.setColor(255,0,0)
+    love.graphics.ellipse( "line", 0 , objects.ball.body:getY() , prad/2, prad/2 )
+    lvx, lvy = objects.ball.body:getLinearVelocity( )
+    love.graphics.line(0,objects.ball.body:getY(),0+lvx,objects.ball.body:getY()+lvy)
+  elseif objects.ball.body:getX() > 800 then
+    love.graphics.setColor(255,0,0)
+    love.graphics.ellipse( "line", 800 , objects.ball.body:getY() , prad/2, prad/2 )
+    lvx, lvy = objects.ball.body:getLinearVelocity( )
+    love.graphics.line(800,objects.ball.body:getY(),800+lvx,objects.ball.body:getY()+lvy)
+  end
+
+
+  love.graphics.setColor(255, 255, 255) -- set the drawing color to green for the ground
+  love.graphics.polygon("fill", objects.twall.body:getWorldPoints(objects.twall.shape:getPoints())) -- draw
+  love.graphics.polygon("fill", objects.bwall.body:getWorldPoints(objects.bwall.shape:getPoints())) -- draw
 
 
   -- CAMERA?
