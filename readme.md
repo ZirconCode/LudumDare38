@@ -6,6 +6,7 @@ A LD38 compo entry with the help of two friends (dr.ugs & spargles) and a great 
 A 2 Player game (other person not required, just pretend your hands are different people, it's fun, you'll feel less lonely).
 
 Windows -> win32/AsgardInvitational.exe
+
 Linux -> love .
 
 Instructions
