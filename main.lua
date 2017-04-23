@@ -66,6 +66,19 @@ function love.load()
 
   gameTime = 60*3 -- 3 minutes?
 
+  pOneGod = 0
+  pTwoGod = 0
+  screenNumber = 0 
+
+  asg1 = love.graphics.newImage("Asgard1.jpg")
+
+  -- 0 = title screen
+  -- story
+  -- instructions??
+  -- character choice x 2
+  -- game
+  -- victory screen & play again
+
   --------
 
   scoreOne = 0
