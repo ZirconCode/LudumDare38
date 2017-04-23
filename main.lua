@@ -47,7 +47,7 @@ function love.load()
   -- WORLD BASICS
   love.physics.setMeter(64) --the height of a meter our worlds will be 64px
   -- no gravity
-  world = love.physics.newWorld(0, 1*1.6*9.81*64, true) --create a world for the bodies to exist in with horizontal gravity of 0 and vertical gravity of 9.81
+  world = love.physics.newWorld(0, 0*1.6*9.81*64, true) --create a world for the bodies to exist in with horizontal gravity of 0 and vertical gravity of 9.81
   world:setCallbacks(beginContact, endContact, preSolve, postSolve) -- collision callbacks
 
   objects = {}
@@ -81,7 +81,7 @@ function love.load()
   -- planets
 
   -- DYNAMIC?
-  prad = 50
+  prad = 40
   objects.pone = {}
   objects.pone.isPlayer = true
   objects.pone.body = love.physics.newBody(world, 70, 300, "dynamic")
@@ -147,9 +147,56 @@ end
 function love.update(dt)
   
 
-  world:update(dt) --
+  --
 
-  objects.ball.body:applyForce(400, 400)
+  -- Apply forces in direction of both planets
+  poX = objects.pone.body:getX()
+  poY = objects.pone.body:getY()
+  ptX = objects.ptwo.body:getX()
+  ptY = objects.ptwo.body:getY()
+  bX = objects.ball.body:getX()
+  bY = objects.ball.body:getY()
+
+  distOne = lume.distance(bX, bY, poX, poY, false) -- true = squared
+  distTwo = lume.distance(bX, bY, ptX, ptY, false)
+  -- print(distOne)
+
+  c = 0.2 -- gravity mass constant
+  distOne = distOne*c
+  distTwo = distTwo*c
+
+  -- del x, del y
+  dX = bX - poX
+  dY = bY - poY
+  -- norm it
+  norm = lume.distance(0, 0, dX, dY, false)
+  dX = dX / norm
+  dY = dY / norm
+  -- apply gravity
+  dX = dX * distOne
+  dY = dY * distOne
+
+  -- and number two
+  -- del x, del y
+  dXt = bX - ptX
+  dYt = bY - ptY
+  -- norm it
+  normt = lume.distance(0, 0, dXt, dYt, false)
+  dXt = dXt / normt
+  dYt = dYt / normt
+  -- apply gravity
+  dXt = dXt * distTwo
+  dYt = dYt * distTwo
+
+  -- total
+  print(dX .. ":" .. dY .. ":" .. dXt .. ":" .. dYt)
+  xForce = dXt + dX
+  yForce = dYt + dY
+
+  objects.ball.body:applyForce(-xForce, -yForce)
+
+
+
 
     --musicPiece2:stop()
 
@@ -162,7 +209,52 @@ function love.update(dt)
   --end
 
  -- if love.keyboard.isDown("down") or love.keyboard.isDown("s") then
-   
+  pvel = 1000
+
+  if love.keyboard.isDown("d") then
+    objects.pone.body:applyForce(pvel, 0)
+  elseif love.keyboard.isDown("a") then
+    objects.pone.body:applyForce(-pvel, 0)
+  end
+
+  if love.keyboard.isDown("s") then
+    objects.pone.body:applyForce(0, pvel)
+  elseif love.keyboard.isDown("w") then
+    objects.pone.body:applyForce(0, -pvel)
+  end
+
+  if love.keyboard.isDown("right") then
+    objects.ptwo.body:applyForce(pvel, 0)
+  elseif love.keyboard.isDown("left") then
+    objects.ptwo.body:applyForce(-pvel, 0)
+  end
+
+  if love.keyboard.isDown("down") then
+    objects.ptwo.body:applyForce(0, pvel)
+  elseif love.keyboard.isDown("up") then
+    objects.ptwo.body:applyForce(0, -pvel)
+  end
+
+  if objects.pone.body:getX() < 0 then
+    objects.pone.body:setX(1)
+    x, y = objects.pone.body:getLinearVelocity( )
+    objects.pone.body:setLinearVelocity(-20,y)
+  elseif objects.pone.body:getX() > 400 then
+    objects.pone.body:setX(400-1)
+    x, y = objects.pone.body:getLinearVelocity( )
+    objects.pone.body:setLinearVelocity(20,y)
+  end
+  if objects.ptwo.body:getX() < 400 then
+    objects.ptwo.body:setX(400+1)
+    x, y = objects.ptwo.body:getLinearVelocity( )
+    objects.ptwo.body:setLinearVelocity(-20,y)
+  elseif objects.ptwo.body:getX() > 800 then
+    objects.ptwo.body:setX(800-1)
+    x, y = objects.ptwo.body:getLinearVelocity( )
+    objects.ptwo.body:setLinearVelocity(20,y)
+  end
+
+  world:update(dt)
    -- prevX = love.mouse:getX()
    -- prevY = love.mouse:getY()-cameraY
 
@@ -201,6 +293,10 @@ function love.draw()
   love.graphics.setColor(0,255,255)
   love.graphics.ellipse( "fill", objects.ptwo.body:getX(), objects.ptwo.body:getY(), prad, prad  )
 
+
+  love.graphics.setColor(255,255,255)
+  -- love.graphics.setLineWidth( 0. )
+  love.graphics.line(400,0,400,600)
 
   -- CAMERA?
  -- love.graphics.translate( 0, cameraY ) -- TODO
