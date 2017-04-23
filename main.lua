@@ -44,6 +44,63 @@ function love.load()
 
   editor = true -- DISABLE LEVEL EDITING
 
+  -- WORLD BASICS
+  love.physics.setMeter(64) --the height of a meter our worlds will be 64px
+  -- no gravity
+  world = love.physics.newWorld(0, 1*1.6*9.81*64, true) --create a world for the bodies to exist in with horizontal gravity of 0 and vertical gravity of 9.81
+  world:setCallbacks(beginContact, endContact, preSolve, postSolve) -- collision callbacks
+
+  objects = {}
+
+  -- walls
+  objects.twall = {}
+  objects.twall.body = love.physics.newBody(world, 800/2, 0) --remember, the shape (the rectangle we create next) anchors to the body from its center, so we have to move it to (650/2, 650-50/2)
+  objects.twall.shape = love.physics.newRectangleShape(800, 50) --make a rectangle with a width of 650 and a height of 50
+  objects.twall.fixture = love.physics.newFixture(objects.twall.body, objects.twall.shape); --attach shape to body
+  objects.twall.fixture:setUserData("topwall")
+
+  objects.bwall = {}
+  objects.bwall.body = love.physics.newBody(world, 800/2, 600) --remember, the shape (the rectangle we create next) anchors to the body from its center, so we have to move it to (650/2, 650-50/2)
+  objects.bwall.shape = love.physics.newRectangleShape(800, 50) --make a rectangle with a width of 650 and a height of 50
+  objects.bwall.fixture = love.physics.newFixture(objects.bwall.body, objects.bwall.shape); --attach shape to body
+  objects.bwall.fixture:setUserData("topwall")
+
+  -- pong ball
+  radius = 10
+  objects.ball = {}
+  objects.ball.isPlayer = true
+  objects.ball.body = love.physics.newBody(world, 800/2, 600/2, "dynamic")
+  objects.ball.shape = love.physics.newCircleShape(  radius ) --the ball's shape has a radius of 20
+  objects.ball.fixture = love.physics.newFixture(objects.ball.body, objects.ball.shape, 1) -- Attach fixture to body and give it a density of 1.
+  --objects.ball.fixture:setFriction(0.3) -- TODO 
+  objects.ball.body:setFixedRotation( true )
+  objects.ball.fixture:setUserData("ball")
+  -- TODO 
+  objects.ball.fixture:setRestitution(1) -- perfect bounce
+
+  -- planets
+
+  -- DYNAMIC?
+  prad = 50
+  objects.pone = {}
+  objects.pone.isPlayer = true
+  objects.pone.body = love.physics.newBody(world, 70, 300, "dynamic")
+  objects.pone.shape = love.physics.newCircleShape(  prad ) 
+  objects.pone.fixture = love.physics.newFixture(objects.pone.body, objects.pone.shape, 1) -- Attach fixture to body and give it a density of 1.
+  --objects.ball.fixture:setFriction(0.3) -- TODO 
+  objects.pone.body:setFixedRotation( true )
+  objects.pone.fixture:setUserData("pone")
+
+  objects.ptwo = {}
+  objects.ptwo.isPlayer = true
+  objects.ptwo.body = love.physics.newBody(world, 800-70, 300, "dynamic")
+  objects.ptwo.shape = love.physics.newCircleShape(  prad ) 
+  objects.ptwo.fixture = love.physics.newFixture(objects.ptwo.body, objects.ptwo.shape, 1) -- Attach fixture to body and give it a density of 1.
+  --objects.ball.fixture:setFriction(0.3) -- TODO 
+  objects.ptwo.body:setFixedRotation( true )
+  objects.ptwo.fixture:setUserData("ptwo")
+
+
   --musicPiece1 = love.audio.newSource("LudumDare37Kitschig1.ogg")
    
   --voice1:setLooping(false)
@@ -76,6 +133,10 @@ function love.load()
   --print(tiles[key])
   -- voice1:play()
 
+
+  -- objects.ball.body:setPosition(589, -1235)
+  --     objects.ball.body:setLinearVelocity(0, -50)
+
   --construct()
 
   --initial graphics setup
@@ -85,6 +146,11 @@ end
 
 function love.update(dt)
   
+
+  world:update(dt) --
+
+  objects.ball.body:applyForce(400, 400)
+
     --musicPiece2:stop()
 
    -- if(musicPiece3:isStopped()) the
@@ -122,6 +188,19 @@ function love.mousereleased( x, y, button )
 end
 
 function love.draw()
+
+  love.graphics.setColor(72, 160, 14) -- set the drawing color to green for the ground
+  love.graphics.polygon("fill", objects.twall.body:getWorldPoints(objects.twall.shape:getPoints())) -- draw
+  love.graphics.polygon("fill", objects.bwall.body:getWorldPoints(objects.bwall.shape:getPoints())) -- draw
+
+  love.graphics.setColor(255,255,0)
+  love.graphics.ellipse( "fill", objects.ball.body:getX(), objects.ball.body:getY(), radius, radius  )
+
+  love.graphics.setColor(255,0,255)
+  love.graphics.ellipse( "fill", objects.pone.body:getX(), objects.pone.body:getY(), prad, prad  )
+  love.graphics.setColor(0,255,255)
+  love.graphics.ellipse( "fill", objects.ptwo.body:getX(), objects.ptwo.body:getY(), prad, prad  )
+
 
   -- CAMERA?
  -- love.graphics.translate( 0, cameraY ) -- TODO
