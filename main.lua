@@ -147,7 +147,7 @@ end
 function love.update(dt)
   
 
-  --
+  -- Physics?
 
   -- Apply forces in direction of both planets
   poX = objects.pone.body:getX()
@@ -161,9 +161,7 @@ function love.update(dt)
   distTwo = lume.distance(bX, bY, ptX, ptY, false)
   -- print(distOne)
 
-  c = 0.2 -- gravity mass constant
-  distOne = distOne*c
-  distTwo = distTwo*c
+  c = 4000 -- gravity mass constant
 
   -- del x, del y
   dX = bX - poX
@@ -173,8 +171,8 @@ function love.update(dt)
   dX = dX / norm
   dY = dY / norm
   -- apply gravity
-  dX = dX * distOne
-  dY = dY * distOne
+  dX = c * dX / distOne
+  dY = c * dY / distOne
 
   -- and number two
   -- del x, del y
@@ -185,8 +183,8 @@ function love.update(dt)
   dXt = dXt / normt
   dYt = dYt / normt
   -- apply gravity
-  dXt = dXt * distTwo
-  dYt = dYt * distTwo
+  dXt = c * dXt / distTwo
+  dYt = c * dYt / distTwo
 
   -- total
   print(dX .. ":" .. dY .. ":" .. dXt .. ":" .. dYt)
